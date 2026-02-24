@@ -1,108 +1,42 @@
-/** MAIN CLASS - UseCase8PalindromeCheckerApp
+/** MAIN CLASS - UseCase10PalindromeCheckerApp
 
- Use Case 8: Linked List Based Palindrome Checker
+ Use Case 10: Case-Insensitive & Space-Ignored Palindrome Checker
 
  Description:
- This class checks whether a string is a palindrome
- using a LinkedList.
+ This class validates a palindrome while ignoring spaces and case.
+ It preprocesses the string using regular expressions and applies
+ recursive logic for palindrome validation.
 
- Characters are added to the list and then compared
- by removing elements from both ends:
-
- - removeFirst()
- - removeLast()
-
- This demonstrates how LinkedList supports
- double-ended operations for symmetric validation.
+ Key Concepts:
+ - String preprocessing
+ - Regular expressions
+ - Recursion (or other logic)
+ - Case-insensitive comparison
+ - Ignoring spaces
 
  @author Garv Raj
- @version 8.0
+ @version 10.0
  **/
 
 public class PalindromeCheckerApp {
 
-    // Node class for singly linked list
-    static class Node {
-        char data;
-        Node next;
-
-        Node(char data) {
-            this.data = data;
-            this.next = null;
-        }
+    // Recursive helper method
+    private static boolean isPalindromeRecursive(String text, int start, int end) {
+        if (start >= end) return true;  // Base case
+        if (text.charAt(start) != text.charAt(end)) return false;
+        return isPalindromeRecursive(text, start + 1, end - 1);
     }
 
-    // Convert string to linked list
-    private static Node stringToLinkedList(String text) {
-        Node head = null, tail = null;
-        for (char ch : text.toCharArray()) {
-            Node newNode = new Node(ch);
-            if (head == null) {
-                head = tail = newNode;
-            } else {
-                tail.next = newNode;
-                tail = newNode;
-            }
-        }
-        return head;
-    }
-
-    // Reverse a linked list starting from given node
-    private static Node reverseList(Node head) {
-        Node prev = null, current = head;
-        while (current != null) {
-            Node nextNode = current.next;
-            current.next = prev;
-            prev = current;
-            current = nextNode;
-        }
-        return prev;
-    }
-
-    // Check if linked list is palindrome
+    // Public method for cleaner interface
     public static boolean isPalindrome(String text) {
-
-        // Clean the input
+        // Normalize input: remove spaces, convert to lowercase
         String cleaned = text.replaceAll("\\s+", "").toLowerCase();
-
-        // Edge cases: empty or single character
-        if (cleaned.length() <= 1) return true;
-
-        // Convert to linked list
-        Node head = stringToLinkedList(cleaned);
-
-        // Use fast and slow pointers to find the middle
-        Node slow = head, fast = head;
-        while (fast.next != null && fast.next.next != null) {
-            slow = slow.next;
-            fast = fast.next.next;
-        }
-
-        // Reverse the second half
-        Node secondHalf = reverseList(slow.next);
-
-        // Compare first and second halves
-        Node p1 = head;
-        Node p2 = secondHalf;
-        boolean palindrome = true;
-        while (p2 != null) {
-            if (p1.data != p2.data) {
-                palindrome = false;
-                break;
-            }
-            p1 = p1.next;
-            p2 = p2.next;
-        }
-
-        // Restore the list (optional)
-        slow.next = reverseList(secondHalf);
-
-        return palindrome;
+        return isPalindromeRecursive(cleaned, 0, cleaned.length() - 1);
     }
 
     public static void main(String[] args) {
 
-        String input = "Madam";
+        String input = "A man a plan a canal Panama";
 
         boolean result = isPalindrome(input);
 
